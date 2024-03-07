@@ -20,4 +20,8 @@ Usage:
 > ./todo ls
 1. wake up
 2. make dinner
+
+> ./todo done 1
+1. wake up V
+2. make dinner
 ```

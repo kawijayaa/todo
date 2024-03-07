@@ -1,7 +1,14 @@
 use std::{env::args, fs::File, io::{BufReader, BufWriter, Error}};
+use serde::{Deserialize, Serialize};
 use serde_json;
 
-fn read_db() -> Option<Vec<String>> {
+#[derive(Serialize, Deserialize)]
+struct TodoItem {
+    name: String,
+    is_done: bool,
+}
+
+fn read_db() -> Option<Vec<TodoItem>> {
     let file = match File::open("db.json") {
         Ok(f) => f,
         Err(_) => {
@@ -14,11 +21,11 @@ fn read_db() -> Option<Vec<String>> {
     let result = serde_json::from_reader(&mut reader);
     match result {
         Ok(data) => Some(data),
-        Err(_) => None
+        Err(_) => Some(Vec::new())
     }
 }
 
-fn write_db(data: Vec<String>) -> Result<Vec<String>, Error> {
+fn write_db(data: Vec<TodoItem>) -> Result<Vec<TodoItem>, Error> {
     let file = File::create("db.json").expect("Cannot open file!");
     let mut writer = BufWriter::new(file);
     let result = serde_json::to_writer(&mut writer, &data);
@@ -29,14 +36,14 @@ fn write_db(data: Vec<String>) -> Result<Vec<String>, Error> {
     }
 }
 
-fn pprint(todos: &Vec<String>) {
+fn pprint(todos: &Vec<TodoItem>) {
     for i in 0..(*todos).len() {
-        println!("{}. {}", i+1, (*todos)[i]);
+        println!("{}. {}", i+1, (*todos)[i].name);
     }
 }
 
 fn main() {
-    let mut todos: Vec<String>;
+    let mut todos: Vec<TodoItem>;
     let command = args().nth(1).unwrap_or_else(|| {
         eprintln!("Usage: todo <command> <arguments>");
         std::process::exit(1);
@@ -48,7 +55,7 @@ fn main() {
 
             let items = args().skip(2).into_iter();
             for item in items {
-                todos.append(&mut vec![item])
+                todos.append(&mut vec![TodoItem{name: item, is_done: false}])
             }
 
             pprint(&todos);
@@ -74,7 +81,7 @@ fn main() {
             let index = arg.parse::<usize>().expect("Argument is not a valid index!");
             let new_name = args().nth(3).expect("New name is not given!");
 
-            todos[index-1] = new_name;
+            todos[index-1].name = new_name;
 
             pprint(&todos);
 
@@ -86,7 +93,7 @@ fn main() {
             pprint(&todos);
         }
         "clear" => {
-            let empty_vector: Vec<String> = Vec::new();
+            let empty_vector: Vec<TodoItem> = Vec::new();
             write_db(empty_vector).unwrap();
         }
         _ => {

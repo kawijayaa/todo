@@ -112,6 +112,18 @@ fn main() {
 
             write_db(todos).unwrap();
         }
+        "undone" => {
+            todos = read_db().unwrap();
+
+            let arg = args().nth(2).expect("No index is given!");
+            let index = arg.parse::<usize>().expect("Argument is not a valid index!");
+
+            todos[index-1].is_done = false;
+
+            pprint(&todos);
+
+            write_db(todos).unwrap();
+        }
         _ => {
             eprintln!("Unrecognized command: {}", command);
             std::process::exit(1);

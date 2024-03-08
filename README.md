@@ -22,6 +22,6 @@ Usage:
 2. make dinner
 
 > ./todo done 1
-1. wake up V
+1. wake up ✓
 2. make dinner
 ```

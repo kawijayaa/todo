@@ -39,7 +39,7 @@ fn write_db(data: Vec<TodoItem>) -> Result<Vec<TodoItem>, Error> {
 fn pprint(todos: &Vec<TodoItem>) {
     for i in 0..(*todos).len() {
         let checkmark = match (*todos)[i].is_done {
-            true => "V",
+            true => "✓",
             false => ""
         };
         println!("{}. {} {}", i+1, (*todos)[i].name, checkmark);

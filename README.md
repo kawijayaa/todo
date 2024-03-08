@@ -24,4 +24,8 @@ Usage:
 > ./todo done 1
 1. wake up ✓
 2. make dinner
+
+> ./todo undone 1
+1. wake up
+2. make dinner
 ```
